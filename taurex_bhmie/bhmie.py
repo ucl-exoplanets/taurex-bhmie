@@ -12,7 +12,8 @@ class BHMieContribution(Contribution):
     Parameters
     ----------
     mie_path: str
-        Path to molecular scattering parameters
+        Path to molecular scattering parameters. Default is 
+        MgSiO3 included in package
 
     mie_type: str of either ``cloud`` or ``haze``
         Type of mie cloud
