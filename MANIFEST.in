@@ -1,0 +1,2 @@
+global-include *.pyf
+global-include *.pyx
