@@ -222,10 +222,10 @@ class BHMieContribution(Contribution):
 
     def write(self, output):
         contrib = super().write(output)
-        contrib.write_scalar('bh_cloud_particle_size', self._mie_radius)
-        contrib.write_scalar('bh_cloud_topP', self._cloud_top_pressure)
-        contrib.write_scalar('bh_cloud_bottomP', self._cloud_bottom_pressure)
-        contrib.write_scalar('bh_cloud_mix', self._mix_cloud_mix)
+        contrib.write_scalar('bh_particle_radius', self._mie_radius)
+        contrib.write_scalar('bh_clouds_topP', self._cloud_top_pressure)
+        contrib.write_scalar('bh_clouds_bottomP', self._cloud_bottom_pressure)
+        contrib.write_scalar('bh_clouds_mix', self._mix_cloud_mix)
         contrib.write_string('mie_path', self._mie_path)
         contrib.write_string('mie_type', self._mie_type)
         return contrib
