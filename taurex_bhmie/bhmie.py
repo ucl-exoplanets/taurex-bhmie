@@ -33,8 +33,8 @@ class BHMieContribution(Contribution):
 
     """
     def __init__(self, mie_path=None, mie_type='cloud', bh_particle_radius=1.0,
-                 bh_clouds_mix=1e-6, bh_clouds_bottomP=1e0,
-                 bh_clouds_topP=1e-3):
+                 bh_clouds_mix=1e-15, bh_clouds_bottomP=100,
+                 bh_clouds_topP=10):
         super().__init__('Mie')
         self._mie_path = mie_path
         if mie_path is None:
@@ -147,12 +147,10 @@ class BHMieContribution(Contribution):
         ``bh_clouds_topP`` and ``bh_clouds_bottomP``
 
         """
-        if model.pressureProfile[layer] <= self._cloud_bottom_pressure and \
-                model.pressureProfile[layer] >= self._cloud_top_pressure:
 
-            contribute_tau(start_layer, end_layer, density_offset,
-                           self.sigma_mie, density, path_length, self._nlayers,
-                           self._ngrid, layer, tau)
+        contribute_tau(start_layer, end_layer, density_offset,
+                        self.sigma_xsec, density, path_length, self._nlayers,
+                        self._ngrid, layer, tau)
 
     def build(self, model):
         """
@@ -217,9 +215,17 @@ class BHMieContribution(Contribution):
         self._ngrid = wngrid.shape[0]
 
         self.sigma_mie = np.interp(wngrid, self.wavenumberGrid,
-                                   self._sig_out_aver)*self._mix_cloud_mix
+                                   self._sig_out_aver)
 
-        yield 'BH', self.sigma_mie
+
+        self.sigma_xsec = np.zeros(shape=(self._nlayers, self._ngrid))
+
+        filt = (model.pressureProfile <= self._cloud_bottom_pressure) & \
+                (model.pressureProfile >= self._cloud_top_pressure)
+        
+        self.sigma_xsec[filt] = self.sigma_mie[None,...]*self._mix_cloud_mix
+
+        yield 'BH', self.sigma_xsec
 
     def write(self, output):
         contrib = super().write(output)
