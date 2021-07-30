@@ -162,7 +162,7 @@ class BHMieContribution(Contribution):
 
         """
         wavegrid = self.wavelengthGrid*1e-4  # micron to cm
-        a = self._mie_radius * 1e-4  # micron to cm
+        a = self._mie_radius*1e-4  # micron to cm
         agrid = None
         na = None
         # getting particle size distribution
@@ -186,7 +186,7 @@ class BHMieContribution(Contribution):
         sig_out = np.ndarray(shape=(len(wavegrid), len(agrid_clip)))
         for i, ai in enumerate(agrid_clip):
 
-            sig_out[:, i] = bh_mie(ai, wavegrid, self.realReference,
+            sig_out[:, i] = bh_mie(np.ascontiguousarray(ai) , np.ascontiguousarray(wavegrid) , self.realReference,
                                    self.imaginaryReference)
 
         # average mie cross section weighted by particle size distribution
